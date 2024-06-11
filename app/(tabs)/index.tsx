@@ -14,7 +14,6 @@ const HomeScreen = () => {
     <SafeAreaView>
       <FlatList
         data={DATA}
-        pagingEnabled
         renderItem={({ item, index }) => (
           <VideoPlayer item={item} isActive={activeVideoIndex === index} />
         )}
