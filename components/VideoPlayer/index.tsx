@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import {
-    Animated,
-    Easing,
-} from "react-native";
-import { ResizeMode } from "expo-av";
+import { Animated, Easing, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
+import { Video, ResizeMode } from "expo-av";
+import { AntDesign } from '@expo/vector-icons';
 
-import { getMusicNoteAnimated, HEIGHT } from "@/utils";
+import { getMusicNoteAnimated, DEVICE_HEIGHT } from "@/utils";
 import { Images } from "@/assets/images";
 import {
     Container,
@@ -27,16 +25,16 @@ import {
     MusicDisc,
     MusicName,
     MusicNameIcon,
-    FloatingMusicNote
+    FloatingMusicNote,
+    PlayPauseButton,
 } from "./styles";
 import { ItemTypes } from "@/types";
 
-
-const VideoPlayer:React.FC<ItemTypes> = ({ item, isActive }) => {
+const VideoPlayer: React.FC<ItemTypes> = ({ item, isActive }) => {
     const bottomTabHeight = useBottomTabBarHeight();
-    const video = useRef(null);
-    const { uri, caption, channelName, musicName, likes, comments, avatar } =
-        item;
+    const video = useRef<Video>(null);
+    const { uri, caption, channelName, musicName, likes, comments, avatar } = item;
+    const [isPlaying, setIsPlaying] = useState(false);
 
     const discAnimatedValue = useRef(new Animated.Value(0)).current;
     const musicNoteAnimatedValue1 = useRef(new Animated.Value(0)).current;
@@ -87,15 +85,31 @@ const VideoPlayer:React.FC<ItemTypes> = ({ item, isActive }) => {
         musicAnimLoopRef.current.start();
     }, [discAnimatedValue, musicNoteAnimatedValue1, musicNoteAnimatedValue2]);
 
+    const handlePlayPause = useCallback(async () => {
+        if (isPlaying) {
+            await video.current.pauseAsync();
+            setIsPlaying(false);
+        } else {
+            await video.current.playAsync();
+            setIsPlaying(true);
+        }
+    }, [isPlaying]);
+
     useEffect(() => {
         if (isActive) {
             triggerAnimation();
+            video.current.playAsync().then(() => {
+                setIsPlaying(true);
+            });
         } else {
             discAnimLoopRef.current?.stop();
             musicAnimLoopRef.current?.stop();
             discAnimatedValue.setValue(0);
             musicNoteAnimatedValue1.setValue(0);
             musicNoteAnimatedValue2.setValue(0);
+            video?.current.stopAsync().then(() => {
+                setIsPlaying(false);
+            });
         }
     }, [
         isActive,
@@ -106,14 +120,21 @@ const VideoPlayer:React.FC<ItemTypes> = ({ item, isActive }) => {
     ]);
 
     return (
-        <Container height={ HEIGHT - bottomTabHeight }>
+        <Container height={DEVICE_HEIGHT}>
             <StyledVideo
                 ref={video}
-                source={uri}
-                useNativeControls
+                source={ uri }
                 resizeMode={ResizeMode.COVER}
                 isLooping
+                shouldPlay={false}
+                useNativeControls={false}
+                style={StyleSheet.absoluteFill}
             />
+            <TouchableOpacity style={styles.playPauseButton} onPress={handlePlayPause}>
+                <PlayPauseButton>
+                    <AntDesign name={isPlaying ? 'pausecircleo' : 'playcircleo'} size={32} color="white" />
+                </PlayPauseButton>
+            </TouchableOpacity>
             <BottomSection>
                 <BottomLeftSection>
                     <ChannelName>{channelName}</ChannelName>
@@ -155,3 +176,12 @@ const VideoPlayer:React.FC<ItemTypes> = ({ item, isActive }) => {
 
 export default VideoPlayer;
 
+const styles = StyleSheet.create({
+    playPauseButton: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+    },
+});

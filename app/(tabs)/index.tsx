@@ -1,9 +1,9 @@
-import { FlatList, SafeAreaView } from "react-native";
+import { FlatList } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import React, { useState } from "react";
 import { DATA } from "@/constants/data";
 import VideoPlayer from "@/components/VideoPlayer";
-import { HEIGHT } from "@/utils";
+import { DEVICE_HEIGHT } from "@/utils";
 
 const HomeScreen = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
@@ -11,7 +11,6 @@ const HomeScreen = () => {
   
 
   return (
-    <SafeAreaView>
       <FlatList
         data={DATA}
         renderItem={({ item, index }) => (
@@ -19,12 +18,11 @@ const HomeScreen = () => {
         )}
         onScroll={(e) => {
           const index = Math.round(
-            e.nativeEvent.contentOffset.y / HEIGHT - bottomTabHeight
+            e.nativeEvent.contentOffset.y / DEVICE_HEIGHT - bottomTabHeight
           );
           setActiveVideoIndex(index);
         }}
       />
-    </SafeAreaView>
   );
 };
 

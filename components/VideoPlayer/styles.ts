@@ -1,17 +1,27 @@
 import styled from "styled-components/native";
-import { WIDTH } from "@/utils";
+import { Dimensions, Platform } from "react-native";
 import { Video } from "expo-av";
 import { Animated } from "react-native";
 
+import { DEVICE_HEIGHT,  DEVICE_WIDTH }  from "@/utils";
+
 export const Container = styled.View<{ height: number }>`
-  width: ${WIDTH}px;
+  width: ${DEVICE_WIDTH}px;
   height: ${props => props.height}px;
 `;
 
 export const StyledVideo = styled(Video)`
-  position: absolute;
   width: 100%;
   height: 100%;
+`;
+
+export const PlayPauseButton = styled.View`
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 25px;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const BottomSection = styled.View`
@@ -19,8 +29,7 @@ export const BottomSection = styled.View`
   bottom: 0;
   flex-direction: row;
   width: 100%;
-  padding-horizontal: 8px;
-  padding-bottom: 16px;
+  padding: 0 8px 16px;
 `;
 
 export const BottomLeftSection = styled.View`
@@ -36,11 +45,13 @@ export const BottomRightSection = styled.View`
 export const ChannelName = styled.Text`
   color: white;
   font-weight: bold;
+  font-size: ${DEVICE_WIDTH * 0.04}px;
 `;
 
 export const Caption = styled.Text`
   color: white;
   margin-vertical: 8px;
+  font-size: ${DEVICE_WIDTH * 0.035}px;
 `;
 
 export const MusicNameContainer = styled.View`
@@ -56,6 +67,7 @@ export const MusicNameIcon = styled.Image`
 
 export const MusicName = styled.Text`
   color: white;
+  font-size: ${DEVICE_WIDTH * 0.035}px;
 `;
 
 export const VerticalBar = styled.View`
@@ -77,6 +89,7 @@ export const VerticalBarIcon = styled.Image`
 export const VerticalBarText = styled.Text`
   color: white;
   margin-top: 4px;
+  font-size: ${DEVICE_WIDTH * 0.035}px;
 `;
 
 export const Avatar = styled.Image`

@@ -1,6 +1,6 @@
 import { Animated, Dimensions } from "react-native";
 
-export const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
+export const { height: DEVICE_HEIGHT, width: DEVICE_WIDTH } = Dimensions.get('window');
 
 export const getMusicNoteAnimated = (animatedValue: Animated.Value, isRotatedLeft: boolean) => {
   return {
